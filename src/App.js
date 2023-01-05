@@ -6,13 +6,18 @@ import Filters from './components/Filters/Filters';
 import Cards from './components/Cards/Cards';
 function App() {
   const [page,setPage] = useState(1);
-  const [ fetchData, setFetchData ] = useState([]);
+  const [ fetchData, setFetchData ] = useState({info:{}, results:[]});
+  let {info, results} = fetchData;
+  console.log("results", results);
   const morty_api =  `https://rickandmortyapi.com/api/character/?page=${ page }`;
   console.log(fetchData);
   useEffect(() => {
     fetch(morty_api)
     .then(res => res.json())
-    .then(data => setFetchData(data.results));
+    .then(data => {
+      setFetchData(data);
+      console.log("data: ",data);
+    });
   },[morty_api]);
   return (
     <div className="App">
@@ -23,8 +28,8 @@ function App() {
             <Filters />
           </div>
           <div className="col-8">
-            <div className="row" gap={3}>
-              <Cards />
+            <div className="row">
+              <Cards results={ results } />
             </div>
           </div>
         </div>

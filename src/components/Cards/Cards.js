@@ -1,16 +1,22 @@
 import React from 'react'
 
-const Cards = () => {
+const Cards = ({ results }) => {
+    console.log("card_array: ",results);
     return (
-        <div className="card pt-2 mb-2" style={{"width":"18rem"}}>
-            <img src="https://rickandmortyapi.com/api/character/avatar/2.jpeg" class="card-img-top" alt="..." />
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    {/* <a href="#" className="btn btn-primary">Go somewhere</a> */}
+        <>
+            {
+               results.length > 0 ? results.map((result, i) => <div key={i} className="card position-relative" style={{ "width": "18rem" }}>
+                    <span className='badge bg-primary w-25 position-absolute' style={{"top":"20px","right":"25px"}}>{ result.status }</span>
+                    <img src={result.image} className="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <h5 class="card-title">{ result.name }</h5>
+                        <p class="card-text">Last Location<br/>{result.location.name}</p>
+                        {/* <a href="#" className="btn btn-primary">Go somewhere</a> */}
+                    </div>
                 </div>
-        </div>
-
+                ):"No matching character found!"
+            }
+        </>
     )
 }
 
