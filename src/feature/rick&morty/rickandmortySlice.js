@@ -1,27 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
-export const fetchData = createAsyncThunk("Rick&Morty/fetchData", async () => {
-    const response = await fetch("", {
+export const fetchData = createAsyncThunk("Rick&Morty/fetchData", async (obj) => {
+    const { page, name, status } = obj;
+    const response = await fetch("https://rickandmortyapi.com/graphql", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             query: `query {
-                        characters(page: 2, filter: { name: "" }) {
-                        info {
-                            pages
-                        }
-                        results {
-                            id
-                            name
-                            status
-                            location {
-                                name
-                            }
-                            image
-                        }
-                    }
-              }`
+              characters(page: ${page}, filter: { name: "${name}", status:"${status}" }) {
+                info {
+                  pages
+                }
+                results {
+                  id
+                  name
+                  status
+                  location {
+                    name
+                  }
+                  image
+                }
+              }
+            }`
         })
     }).then(res => res.json())
         .then(data => data);
@@ -39,6 +40,8 @@ const rickAndMortySlice = createSlice({
     extraReducers: (build) => {
         build.addCase(fetchData.pending, (state) => {
             state.isLoading = true;
+            state.error = null;
+            state.data = [];
         });
         build.addCase(fetchData.fulfilled, (state, action) => {
             state.isLoading = false;

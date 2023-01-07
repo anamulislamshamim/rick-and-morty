@@ -5,32 +5,38 @@ import 'bootstrap/dist/js/bootstrap';
 import Filters from './components/Filters/Filters';
 import Cards from './components/Cards/Cards';
 import Pagination from './components/Pagination/Pagination';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchData } from './feature/rick&morty/rickandmortySlice';
 function App() {
-  const [page,setPage] = useState(1);
-  const [ fetchData, setFetchData ] = useState({info:{}, results:[]});
-  let {info, results} = fetchData;
-  console.log("results", results);
-  const morty_api =  `https://rickandmortyapi.com/api/character/?page=${ page }`;
-  console.log(fetchData);
+  const { isLoading, error, data } = useSelector(state => state.rickandmorty);
+  const { info, results } = data.characters || {info:{}, results:[]};
+  const [page, setPage] = useState(1);
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
-    fetch(morty_api)
-    .then(res => res.json())
-    .then(data => {
-      setFetchData(data);
-      console.log("data: ",data);
-    });
-  },[morty_api]);
+    dispatch(fetchData({page, name, status}));
+  }, [dispatch, page, name, status]);
+  // if(isLoading) return <h1>Loading...</h1>
   return (
     <div className="App">
       <h1 className='text-center my-5'><span className='fs-1 text-primary fw-bold'>R</span>ick <span style={{ "color": "red" }}>&</span> <span className='text-primary fw-bold'>M</span>orty</h1>
       <div className="container">
         <div className="row">
           <div className="col-3">
-            <Filters />
+            <Filters setStatus={setStatus} />
           </div>
           <div className="col-8">
             <div className="row">
-              <Cards results={ results } />
+              {
+                isLoading && <h1>Loading...</h1>
+              }
+              {
+                results && <Cards results={ results } />
+              }
+              {
+                error && <h1 style={{"color":"red"}}>{ error.message }</h1>
+              }
             </div>
           </div>
         </div>
