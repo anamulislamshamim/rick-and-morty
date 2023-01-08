@@ -7,6 +7,7 @@ import Cards from './components/Cards/Cards';
 import Pagination from './components/Pagination/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchData } from './feature/rick&morty/rickandmortySlice';
+import Search from './components/Search/Search';
 function App() {
   const { isLoading, error, data } = useSelector(state => state.rickandmorty);
   const { info, results } = data.characters || {info:{}, results:[]};
@@ -21,6 +22,7 @@ function App() {
   return (
     <div className="App">
       <h1 className='text-center my-5'><span className='fs-1 text-primary fw-bold'>R</span>ick <span style={{ "color": "red" }}>&</span> <span className='text-primary fw-bold'>M</span>orty</h1>
+      <Search setName={ setName } />
       <div className="container">
         <div className="row">
           <div className="col-3">
@@ -41,7 +43,7 @@ function App() {
           </div>
         </div>
       </div>
-      <Pagination />
+      <Pagination info={ info } page={ page } setPage={ setPage } />
     </div>
   );
 }
